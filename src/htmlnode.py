@@ -13,11 +13,11 @@ class HTMLNode:
         if self.props is None: 
             return ""
         
-        props = ""
+        props_html = ""
         for key, value in self.props.items():
-            props += f' {key}="{value}"'
+            props_html += f' {key}="{value}"'
 
-        return props
+        return props_html
     
     def __repr__(self):
         return f"HTMLNode({self.tag}, {self.value}, children: {self.children}, {self.props})"
