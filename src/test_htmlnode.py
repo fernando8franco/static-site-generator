@@ -1,6 +1,6 @@
 import unittest
 
-from htmlnode import HTMLNode, LeafNode
+from htmlnode import HTMLNode, LeafNode, ParentNode
 
 class TestHTMLNode(unittest.TestCase):
     def test_props_1(self):
@@ -48,11 +48,75 @@ class TestHTMLNode(unittest.TestCase):
         with self.assertRaises(ValueError):
             LeafNode("p", None).to_html()
 
-    def test_htmlleaf_repr(self):
+    def test_leafnode_repr(self):
         leaf_node = LeafNode("a", "google", {"href":"https://www.google.com"})
         self.assertEqual(
             leaf_node.__repr__(),
             "LeafNode(a, google, {'href': 'https://www.google.com'})"
+        )
+
+    def test_parentnode_values(self):
+        parent_node = ParentNode(
+                        "p",
+                        [
+                            LeafNode("b", "Bold text"),
+                            LeafNode(None, "Normal text")
+                        ],
+                    )
+        self.assertEqual(parent_node.tag, "p")
+        self.assertListEqual(parent_node.children, [LeafNode("b", "Bold text"), LeafNode(None, "Normal text")])
+
+    def test_parentnode_to_html(self):
+        parent_node = ParentNode(
+                            "p",
+                            [
+                                LeafNode("b", "Bold text"),
+                                LeafNode(None, "Normal text"),
+                                LeafNode("i", "italic text"),
+                                LeafNode(None, "Normal text"),
+                            ],
+                        )
+        
+        self.assertEqual(
+            parent_node.to_html(),
+            "<p><b>Bold text</b>Normal text<i>italic text</i>Normal text</p>"
+        )
+
+        parent_node = ParentNode(
+                            "div",
+                            [
+                                ParentNode(
+                                    "div",
+                                    [
+                                        LeafNode("p", "Paragraph"),
+                                        LeafNode("b", "Bold")
+                                    ]
+                                    ),
+                                LeafNode("a", "google", {"href":"https://www.google.com"}),
+                            ],
+                        )
+        
+        self.assertEqual(
+            parent_node.to_html(),
+            '<div><div><p>Paragraph</p><b>Bold</b></div><a href="https://www.google.com">google</a></div>'
+        )
+
+        with self.assertRaises(ValueError):
+            ParentNode(None, [LeafNode("b", "Bold")]).to_html()
+
+        with self.assertRaises(ValueError):
+            ParentNode("a", None).to_html()
+
+    def test_parentnode_repr(self):
+        parent_node = ParentNode(
+                        "p",
+                        [
+                            LeafNode("a", "google", {"href":"https://www.google.com"}),
+                        ],
+                    )
+        self.assertEqual(
+            parent_node.__repr__(),
+            "ParentNode(p, children: [LeafNode(a, google, {'href': 'https://www.google.com'})], None)"
         )
         
 
