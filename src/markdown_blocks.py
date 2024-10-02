@@ -150,3 +150,13 @@ def ordered_list_to_html_node(block):
         children = text_to_children(text)
         html_items.append(ParentNode('li', children))
     return ParentNode('ol', html_items)
+
+def extract_title(markdown):
+    blocks = markdown.split("\n\n")
+    for block in blocks:
+        lines = block.split("\n")
+        for line in lines:
+            if line.startswith("# "):
+                return line.lstrip("#").strip()
+            
+    raise ValueError("No h1 header found")

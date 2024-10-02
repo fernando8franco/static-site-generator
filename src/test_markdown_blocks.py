@@ -1,6 +1,6 @@
 import unittest
 
-from markdown_blocks import block_to_block_type, markdown_to_blocks, markdown_to_html_node
+from markdown_blocks import block_to_block_type, extract_title, markdown_to_blocks, markdown_to_html_node
 
 class TestMarkdownBlocks(unittest.TestCase):
 
@@ -154,3 +154,10 @@ this is paragraph text
             html,
             "<div><ul><li>This is a list</li><li>with items</li><li>and <i>more</i> items</li></ul><ol><li>This is an <code>ordered</code> list</li><li>with items</li><li>and more items</li></ol></div>",
         )
+
+    def test_extract_title(self):
+        markdown = """
+# Header 1
+"""
+        header = extract_title(markdown)
+        self.assertEqual(header, "Header 1")
